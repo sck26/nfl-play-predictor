@@ -1,4 +1,4 @@
-# Fourth Down Lab — NFL Play Predictor Demo
+# NFL Play Predictor
 
 An interactive football play-type **rule-based prototype**, with a Python serverless API designed for AWS Lambda. This is a portfolio demonstration, not a trained machine learning model.
 
