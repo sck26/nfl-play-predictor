@@ -1,44 +1,74 @@
-# NFL Play Predictor
+# NFL Play Predictor — Rule-Based Web Demo
 
-An interactive football play-type **rule-based prototype**, with a Python serverless API designed for AWS Lambda. This is a portfolio demonstration, not a trained machine learning model.
+> **Status: Source code published; AWS deployment unverified.** This repository is a lightweight demonstration of a football play-call heuristic, **not** the trained gradient-boosting NFL model. Do not use it as proof of an 80% accuracy result or a live AWS deployment.
 
-## Features
-- Responsive static website in `site/index.html`
-- Down and yards-to-gain inputs with a play recommendation
-- Python Lambda API with JSON responses and CORS headers
-- Browser-only fallback before deployment
-- Unit tests and an AWS deployment guide
+## What is implemented
 
-## Local development
-Open `site/index.html` in a browser. No frontend dependencies are needed.
+- Responsive interactive site: [site/index.html](site/index.html)
+- Python JSON endpoint compatible with AWS Lambda: [lambda_api/app.py](lambda_api/app.py)
+- Basic unit tests: [tests/test_app.py](tests/test_app.py)
+- Deployment instructions: [deploy/AWS_SETUP.md](deploy/AWS_SETUP.md)
+- Browser-side fallback when the API is not configured
 
-Run tests from the repository root:
+## Verified deployment status
+
+| Component | Status | Live URL |
+| --- | --- | --- |
+| GitHub source | Published | https://github.com/sck26/nfl-play-predictor |
+| AWS S3 website | **Not verified as deployed** | Not provided |
+| AWS Lambda API | **Not verified as deployed** | Not provided |
+
+In particular, `site/index.html` currently sets `const API_URL='';`, so the interactive demo uses local JavaScript rules rather than a live Lambda endpoint. Publishing to GitHub does **not** deploy either AWS service.
+
+## Run locally
+
+Open `site/index.html` in a browser.
+
+Run the unit tests:
+
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-Test the API locally:
+Run the API handler locally:
+
 ```bash
 python -m lambda_api.app
 ```
 
-## API
-After deploying AWS Lambda with a Function URL:
-`GET https://YOUR_FUNCTION_URL/?down=3&distance=8`
+For a Lambda test event:
 
-Example response:
+```json
+{"requestContext":{"http":{"method":"GET"}},"queryStringParameters":{"down":"3","distance":"8"}}
+```
+
+Example JSON response:
+
 ```json
 {"prediction":"pass","down":3,"distance":8,"model":"rule-based-demo","disclaimer":"Educational heuristic, not a trained ML prediction."}
 ```
 
-## AWS
-Follow [AWS_SETUP.md](deploy/AWS_SETUP.md). Once Lambda is live, replace `const API_URL='';` in `site/index.html` with its HTTPS URL, then upload the website to S3.
+## Deploy to AWS
 
-## Accuracy and resume claims
-This demo has **no measured model accuracy**, and it should not be described as AWS-deployed until the services are actually deployed. Do not attribute an 80% figure to this heuristic. After deployment, S3 and Lambda can accurately be listed in the project description.
+Follow [the deployment guide](deploy/AWS_SETUP.md). After deploying:
 
-## Security
-Do not commit credentials. Public endpoints can incur usage costs. Review AWS pricing and free-plan terms, enable MFA, monitor usage and ask a parent or guardian for help with account/billing requirements if applicable.
+1. Confirm the S3 website opens.
+2. Confirm a request to the actual Lambda function URL returns HTTP 200 and valid JSON.
+3. Set `API_URL` in `site/index.html` to that function URL, deploy the website again, and test the full UI.
+4. **Only then** replace the two 'Not verified' entries in this README with actual public endpoints and verification details.
+
+Never commit credentials. An exposed public API may incur charges; check account requirements and costs before deployment.
+
+## How this relates to an NFL machine-learning model
+
+This project contains **no gradient-boosting training code, training dataset, train/test split, or measured evaluation metrics**. The rule-based output is not a statistically validated prediction.
+
+A separate trained model repository should document its data source, target labels, engineered features, preprocessing, train/test split, training code, evaluation results (including confusion matrix and class balance where relevant), and reproducibility instructions. Any reported **80% result must be backed by that model's recorded evaluation**, not assigned to this demo.
+
+## Resume guidance
+
+Until AWS is verified, describe this only as a **Python rule-based API and JavaScript football play-call demo**, not as an S3/Lambda deployment or an 80%-accurate ML predictor.
 
 ## License
+
 MIT. See [LICENSE](LICENSE).
